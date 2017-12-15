@@ -9,12 +9,14 @@ const jshint = require('gulp-jshint');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
+const cleancss = require('gulp-clean-css');
+const pump = require('pump');
 
 // The default task when the 'gulp' command is executed
 gulp.task('default', ['watch']);
 
 // Add a new task to copy HTML from source folder to distribution folder
-gulp.task('copyHTML', () => {
+gulp.task('copy-html', () => {
     gulp.src('src/*.html')
         .pipe(gulp.dest('dist'));
 });
@@ -27,24 +29,35 @@ gulp.task('jshint', () => {
 });
 
 // Concat and minify JS
-gulp.task('build-js', () => {
-    return gulp.src('src/js/**/*.js')
-        .pipe(concat('bundle.js'))
-        .pipe(gutil.env.env === 'production' ? uglify() : gutil.noop())
-        .pipe(gulp.dest('dist/js'));
+gulp.task('build-js', (callback) => {
+    pump([
+        gulp.src('src/js/**/*.js'),
+        concat('bundle.js'),
+        gutil.env.type === 'production' ? uglify() : gutil.noop(),
+        gulp.dest('dist/js')
+    ],
+        callback
+    );
 });
 
 // Process SASS files
-gulp.task('build-css', () => {
-    return gulp.src('src/scss/**/*.scss')
-        .pipe(sass())
-        .pipe(gutil.env.env === 'production' ? uglify() : gutil.noop())
-        .pipe(gulp.dest('dist/css'));
+gulp.task('build-css', (callback) => {
+    pump([
+        gulp.src('src/scss/**/*.scss'),
+        sass(),
+        gutil.env.type === 'production' ? cleancss(): gutil.noop(),
+        gulp.dest('dist/css')
+    ],
+        callback
+    );
+
 });
 
 // Watch files for changes
 gulp.task('watch', () => {
+    gulp.watch('src/*.html', ['copy-html']);
     gulp.watch('src/js/**/*.js', ['jshint']);
-    gulp.watch('src/scss/**/*.js', ['build-css']);
+    gulp.watch('src/scss/**/*.scss', ['build-css']);
+    gulp.watch('src/js/**/*.js', ['build-js']);
 });
 
