@@ -1,0 +1,24 @@
+{
+  "name": "polo-360",
+  "version": "1.0.0",
+  "description": "A recreation of a PSD website mockup",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codebubb/polo-360.git"
+  },
+  "author": "James Bubb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codebubb/polo-360/issues"
+  },
+  "homepage": "https://github.com/codebubb/polo-360#readme",
+  "devDependencies": {
+    "gulp-jshint": "^2.0.4",
+    "jshint": "^2.9.5",
+    "jshint-stylish": "^2.2.1"
+  }
+}
